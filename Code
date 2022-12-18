@@ -1,0 +1,78 @@
+#include <IRremote.h>
+#define FIRST 13
+#define SECOND 11
+#define THIRD 10
+#define RED 8
+#define BLUE 7
+#define GREEN 3
+long button0 = 16593103;
+long button1 = 16582903;
+long button2 = 16615543;
+long button3 = 16599223;
+long button4 = 16591063;
+long button5 = 16623703;
+long button6 = 16607383;
+int RECV_PIN = 6;
+long get; 
+IRrecv irrecv(RECV_PIN);
+decode_results results;
+
+void setup()
+{
+  Serial.begin(9600); 
+  irrecv.enableIRIn(); 
+  pinMode(FIRST, OUTPUT);
+  pinMode(SECOND, OUTPUT);
+  pinMode(THIRD, OUTPUT);
+  pinMode(RED, OUTPUT);
+  pinMode(BLUE, OUTPUT);
+  pinMode(GREEN, OUTPUT);
+}
+
+void loop()
+{
+  if (irrecv.decode(&results)){ 
+    get = results.value; 
+    Serial.println(get, DEC);
+    Serial.println(get, HEX);
+    if(get == button1) {
+      digitalWrite(FIRST, HIGH);
+    }
+    if(get == button0) {
+      digitalWrite(FIRST, LOW);
+      digitalWrite(SECOND, LOW);
+      digitalWrite(THIRD, LOW);
+      analogWrite(RED,0);
+      analogWrite(BLUE,0);
+      analogWrite(GREEN,0);
+    }
+    if(get == button2) {
+      digitalWrite(SECOND, HIGH);
+    }
+    
+    if(get == button4){
+    analogWrite(RED,0);
+    analogWrite(BLUE,0);
+    analogWrite(GREEN,255);
+    }
+    if(get == button5){
+    analogWrite(RED,255);
+    analogWrite(BLUE,0);
+    analogWrite(GREEN,0);
+    }
+    if(get == button6){
+    analogWrite(RED,0);
+    analogWrite(BLUE,255);
+    analogWrite(GREEN,0);
+    }
+    irrecv.resume();
+  }
+    if(get == button3){
+  while(get != button0) {
+      digitalWrite(THIRD, !digitalRead(THIRD));
+    irrecv.resume();
+      delay(500);
+    loop();
+    }
+  }
+}
